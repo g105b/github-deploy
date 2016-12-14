@@ -52,3 +52,7 @@ For example on a production server, when a tag's distribution files are sent to 
 On staging servers (initiated from matching branches or the master branch), the same is true except the branch name will be appended to the path.
 
 For example on a staging server, when the master branch's distribution files are sent to the server, they will be placed into `/var/deploy/REPO_NAME/master`. The same goes for other branches. This allows a webserver to be set up to serve all branches using a subdomain convention such as master.staging.example.com .
+
+## X. Configure non-tracked files.
+
+// TODO.
