@@ -43,7 +43,7 @@ deployment:
 
 Each command executes the `deploy` script with the argument `issue`, `staging` or `production`. Branch/tag/path information is provided by CircleCI via environment variables.
 
-## Set up server links.
+## X. Set up server links.
 
 On each production and staging server, the repositories that will be deployed need their deploy locations linking. This is done by placing a symlink at `/var/deploy/REPO_NAME`.
 
