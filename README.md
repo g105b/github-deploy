@@ -42,3 +42,13 @@ deployment:
 ```
 
 Each command executes the `deploy` script with the argument `issue`, `staging` or `production`. Branch/tag/path information is provided by CircleCI via environment variables.
+
+## Set up server links.
+
+On each production and staging server, the repositories that will be deployed need their deploy locations linking. This is done by placing a symlink at `/var/deploy/REPO_NAME`.
+
+For example on a production server, when a tag's distribution files are sent to the server, they will be placed directly in `/var/deploy/REPO_NAME`. This can be a symbolic link to anywhere else on disk, commonly `/var/www/example.com`.
+
+On staging servers (initiated from matching branches or the master branch), the same is true except the branch name will be appended to the path.
+
+For example on a staging server, when the master branch's distribution files are sent to the server, they will be placed into `/var/deploy/REPO_NAME/master`. The same goes for other branches. This allows a webserver to be set up to serve all branches using a subdomain convention such as master.staging.example.com .
