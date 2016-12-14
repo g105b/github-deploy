@@ -4,7 +4,7 @@
 
 This needs to be done once per organisation/team, so you can share the deploy keys over all repositories that share the same target deployment servers.
 
-```
+```bash
 # Creates files deploy-key and deploy-key.pub in your current directory.
 ssh-keygen -t rsa -b 4096 -C deploy@circleci -f deploy-key
 ```
