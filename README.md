@@ -23,7 +23,7 @@ After any `machine`, `checkout`, `dependencies`, etc., add the `deployment` comm
 
 The `issue`, `staging` and `production` sub-keys must match the deploy script to differentiate types of deployment.
 
-```
+```yml
 deployment:
   issue:
     branch: /([0-9]+-.*)/
