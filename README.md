@@ -55,4 +55,8 @@ For example on a staging server, when the master branch's distribution files are
 
 ## X. Configure non-tracked files.
 
-// TODO.
+There are two supported methods for handling non-tracked files, such as configuration and other files that only exist in certain forms on a server-by-server basis. Configuration files are the most obvious requirement here, as they need to contain information such as API secret keys, database passwords, etc. and this information should never find its way into version control.
+
+### Full file overwrites.
+
+Certain files that need to exist on particular servers can be placed in `/var/deploy/files/REPO_NAME`. The files will be coppied over the repository after deployment, overwriting whatever is in its place. For example, when deploying the master branch to `/var/www/REPO_NAME/master`, placing a file at `/var/deploy/files/REPO_NAME/config/database.ini` will copy the file to `/var/www/REPO_NAME/master/config/database.ini`, and any file in its place will be overwritten.
