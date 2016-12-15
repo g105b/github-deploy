@@ -8,7 +8,9 @@ fi
 
 CFG_TMP_PATH="/tmp/deploy"
 CFG_DEPLOY_BASE_PATH="/var/deploy"
+CFG_DEPLOY_BASE_PATH_PROD="$CFG_DEPLOY_BASE_PATH"
 CFG_FILES_PATH="/var/deploy/files"
+CFG_FILES_PATH_PROD="$CFG_FILES_PATH"
 
 # Overwrite the configurable variables with any set in config.ini .
 if [ -a config.ini ]; then
@@ -22,9 +24,19 @@ if [ -a config.ini ]; then
 		CFG_DEPLOY_BASE_PATH=$VALUE
 	fi
 
+	VALUE=$(awk -F "=" '/deploy_base_path_prod/ {print $2}' config.ini)
+	if [ -z $VALUE ]; then
+		CFG_DEPLOY_BASE_PATH_PROD=$VALUE
+	fi
+
 	VALUE=$(awk -F "=" '/deploy_files_path/ {print $2}' config.ini)
 	if [ -z $VALUE ]; then
 		CFG_FILES_PATH=$VALUE
+	fi
+
+	VALUE=$(awk -F "=" '/deploy_files_path_prod/ {print $2}' config.ini)
+	if [ -z $VALUE ]; then
+		CFG_FILES_PATH_PROD=$VALUE
 	fi
 fi
 
@@ -38,6 +50,8 @@ case $1 in
 "production")
 	DEPLOY_TYPE=$DEPLOY_TYPE_TAG
 	DEPLOY_REF="$CIRCLE_TAG"
+	DEPLOY_PATH="$CFG_DEPLOY_BASE_PATH_PROD/$CIRCLE_PROJECT_REPONAME"
+	CFG_FILES_PATH="$CFG_FILES_PATH_PROD"
 	;;
 "staging")
 	DEPLOY_TYPE=$DEPLOY_TYPE_BRANCH
