@@ -42,14 +42,14 @@ $DEPLOY_TYPE_TAG)
 	SSH_CONNECTION=$(awk -F "=" '/ssh_production/ {print $2}' config.ini)
 	;;
 $DEPLOY_TYPE_BRANCH)
-SSH_CONNECTION=$(awk -F "=" '/ssh_staging/ {print $2}' config.ini)
+	SSH_CONNECTION=$(awk -F "=" '/ssh_staging/ {print $2}' config.ini)
 	;;
 esac
 
 # stream to tmp directory first; this avoids downtime during stream.
 TMPDIR=CFG_TMP_DIR
 REMOTE_SSH_TAR_COMMAND="rm -rf $TMPDIR; mkdir -p $TMPDIR; cd $TMPDIR; tar xzf -"
-CMD_SSH_TAR="$SSH_CONNECTION '$REMOTE_SSH_TAR_COMMAND'"
+CMD_SSH_TAR="ssh $SSH_CONNECTION '$REMOTE_SSH_TAR_COMMAND'"
 # Circle will execute this script within the repo directory.
 cd ..
 # Perform tar stream. "-" file indicates a redirect via pipe.
@@ -69,4 +69,4 @@ echo "Remotely executing: $CMD_BACKUP"
 echo "Remotely executing: $CMD_MOVE_DEPLOYMENT"
 
 # Perform all commands in one connection to minimise downtime.
-eval "$SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT'"
+eval "ssh $SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT'"
