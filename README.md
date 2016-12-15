@@ -60,3 +60,18 @@ There are two supported methods for handling non-tracked files, such as configur
 ### Full file overwrites.
 
 Certain files that need to exist on particular servers can be placed in `/var/deploy/files/REPO_NAME`. The files will be coppied over the repository after deployment, overwriting whatever is in its place. For example, when deploying the master branch to `/var/www/REPO_NAME/master`, placing a file at `/var/deploy/files/REPO_NAME/config/database.ini` will copy the file to `/var/www/REPO_NAME/master/config/database.ini`, and any file in its place will be overwritten.
+
+### Configuration file placeholders.
+
+Sometimes it is a better strategy to replace only certain values within files. This is especially useful for configuration files; each server may share all configuration options apart from one, and it would make more sense to only update the lines that are different per server.
+
+This is achieved by placing configuration files within `/var/deploy/config/REPO_NAME`. Each type of file's replacement is handled differently. Only place the updated lines witin the files, in the same layout as they should be copied, as per full file overwrites.
+
+For example, if the `database.ini` file only needs its hostname and password changing per server, the following file contents can be used, which will replace the matching lines:
+
+```ini
+hostname="db.example.com"
+password="t0ps3cr3t"
+```
+
+All existing lines in the matching files will be kept in place. This placeholder updating method merges `ini`, `json` and `yml` config files.
