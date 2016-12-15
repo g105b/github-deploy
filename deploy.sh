@@ -79,7 +79,7 @@ $DEPLOY_TYPE_BRANCH)
 esac
 
 # stream to tmp directory first; this avoids downtime during stream.
-TMPDIR=CFG_TMP_PATH
+TMPDIR=$CFG_TMP_PATH
 REMOTE_SSH_TAR_COMMAND="rm -rf $TMPDIR; mkdir -p $TMPDIR; cd $TMPDIR; tar xzf -"
 CMD_SSH_TAR="ssh $SSH_CONNECTION '$REMOTE_SSH_TAR_COMMAND'"
 # Circle will execute this script within the repo directory.
