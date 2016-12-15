@@ -83,7 +83,7 @@ To execute the deployment, the `deploy` bash script should be executed within th
 ```yml
 checkout:
   post:
-    - wget https://github.com/g105b/circleci-github-deploy/blob/master/deploy.sh
+    - wget https://raw.githubusercontent.com/g105b/circleci-github-deploy/master/deploy.sh
 
 deployment:
   issue:
