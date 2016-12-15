@@ -83,22 +83,21 @@ To execute the deployment, the `deploy` bash script should be executed within th
 ```yml
 checkout:
   post:
-    - wget https://github.com/g105b/circleci-github-deploy/blob/master/deploy.bash
-    - chmod +x deploy.bash
+    - wget https://github.com/g105b/circleci-github-deploy/blob/master/deploy.sh
 
 deployment:
   issue:
     branch: /([0-9]+-.*)/
     commands:
-      - ./deploy.bash issue
+      - bash deploy.sh issue
 
   staging:
     branch: master
     commands:
-      - ./deploy.bash staging
+      - bash deploy.sh staging
 
   production:
     tag: /(v[0-9]\.[0-9]\.[0-9])/
     commands:
-      - ./deploy.bash production
+      - bash deploy.sh production
 ```
