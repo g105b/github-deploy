@@ -91,8 +91,8 @@ tar czf - "$CIRCLE_PROJECT_REPONAME/" | eval $CMD_SSH_TAR
 # Copy any deployment files over the new deployment.
 DEPLOY_FILES_PATH="$CFG_FILES_PATH/$CIRCLE_PROJECT_REPONAME"
 CMD_SSH_FILES="cp -R $DEPLOY_FILES_PATH/* $TMPDIR/$CIRCLE_PROJECT_REPONAME"
-# Make a backup of the old deployment.
-CMD_BACKUP=""
+
+CMD_BACKUP="echo 'In production, backup old directory is not used.'"
 if [ "$1" -ne "production" ]; then
 	CMD_BACKUP="if [ -d $DEPLOY_PATH ]; then rm -rf $DEPLOY_PATH.old; mv $DEPLOY_PATH $DEPLOY_PATH.old; fi"
 fi
