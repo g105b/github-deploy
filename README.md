@@ -75,3 +75,30 @@ password="t0ps3cr3t"
 ```
 
 All existing lines in the matching files will be kept in place. This placeholder updating method merges `ini`, `json` and `yml` config files.
+
+## X. Run the deploy script from CircleCI.
+
+To execute the deployment, the `deploy` bash script should be executed within the CircleCI builds. The way you get the script itself distributed onto your build servers is up to you, but one method would be to configure CircleCI to download the script from Github before the deployment stage, then run it through bash.
+
+```yml
+checkout:
+  post:
+    - wget https://github.com/g105b/circleci-github-deploy/blob/master/deploy.bash
+    - chmod +x deploy.bash
+
+deployment:
+  issue:
+    branch: /([0-9]+-.*)/
+    commands:
+      - ./deploy.bash issue
+
+  staging:
+    branch: master
+    commands:
+      - ./deploy.bash staging
+
+  production:
+    tag: /(v[0-9]\.[0-9]\.[0-9])/
+    commands:
+      - ./deploy.bash production
+```
