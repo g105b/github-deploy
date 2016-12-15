@@ -15,27 +15,27 @@ CFG_FILES_PATH_PROD="$CFG_FILES_PATH"
 # Overwrite the configurable variables with any set in config.ini .
 if [ -a config.ini ]; then
 	VALUE=$(awk -F "=" '/deploy_tmp_path/ {print $2}' config.ini)
-	if [ -z $VALUE ]; then
+	if [ ! -z $VALUE ]; then
 		CFG_TMP_PATH=$VALUE
 	fi
 
 	VALUE=$(awk -F "=" '/deploy_base_path/ {print $2}' config.ini)
-	if [ -z $VALUE ]; then
+	if [ ! -z $VALUE ]; then
 		CFG_DEPLOY_BASE_PATH=$VALUE
 	fi
 
 	VALUE=$(awk -F "=" '/deploy_base_path_prod/ {print $2}' config.ini)
-	if [ -z $VALUE ]; then
+	if [ ! -z $VALUE ]; then
 		CFG_DEPLOY_BASE_PATH_PROD=$VALUE
 	fi
 
 	VALUE=$(awk -F "=" '/deploy_files_path/ {print $2}' config.ini)
-	if [ -z $VALUE ]; then
+	if [ ! -z $VALUE ]; then
 		CFG_FILES_PATH=$VALUE
 	fi
 
 	VALUE=$(awk -F "=" '/deploy_files_path_prod/ {print $2}' config.ini)
-	if [ -z $VALUE ]; then
+	if [ ! -z $VALUE ]; then
 		CFG_FILES_PATH_PROD=$VALUE
 	fi
 fi
