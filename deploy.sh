@@ -94,7 +94,7 @@ CMD_SSH_FILES="cp -R $DEPLOY_FILES_PATH/* $TMPDIR/$CIRCLE_PROJECT_REPONAME"
 
 # In production, backup old directory is not used. Remove any old deployed files instead.
 CMD_BACKUP="rm -rf $DEPLOY_PATH/*"
-if [ "$1" -ne "production" ]; then
+if [ "$1" != "production" ]; then
 	CMD_BACKUP="if [ -d $DEPLOY_PATH ]; then rm -rf $DEPLOY_PATH.old; mv $DEPLOY_PATH $DEPLOY_PATH.old; fi"
 fi
 
