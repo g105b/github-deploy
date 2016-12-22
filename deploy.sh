@@ -11,6 +11,8 @@ CFG_DEPLOY_BASE_PATH="/var/deploy"
 CFG_DEPLOY_BASE_PATH_PROD="$CFG_DEPLOY_BASE_PATH"
 CFG_FILES_PATH="/var/deploy/files"
 CFG_FILES_PATH_PROD="$CFG_FILES_PATH"
+CFG_CONFIG_PATH="/var/deploy/config"
+CFG_CONFIG_PATH_PROD="$CFG_CONFIG_PATH"
 
 # Overwrite the configurable variables with any set in config.ini .
 if [ -a config.ini ]; then
@@ -38,6 +40,16 @@ if [ -a config.ini ]; then
 	if [ ! -z $VALUE ]; then
 		CFG_FILES_PATH_PROD=$VALUE
 	fi
+
+	VALUE=$(awk -F "=" '/deploy_config_path=/ {print $2}' config.ini)
+	if [ ! -z $VALUE ]; then
+		CFG_CONFIG_PATH=$VALUE
+	fi
+
+	VALUE=$(awk -F "=" '/deploy_config_path_prod=/ {print $2}' config.ini)
+	if [ ! -z $VALUE ]; then
+		CFG_CONFIG_PATH_PROD=$VALUE
+	fi
 fi
 
 DEPLOY_TYPE_TAG="deploy-type-tag"
@@ -52,6 +64,7 @@ case $1 in
 	DEPLOY_REF="$CIRCLE_TAG"
 	DEPLOY_PATH="$CFG_DEPLOY_BASE_PATH_PROD/$CIRCLE_PROJECT_REPONAME"
 	CFG_FILES_PATH="$CFG_FILES_PATH_PROD"
+	CFG_CONFIG_PATH="$CFG_CONFIG_PATH_PROD"
 	;;
 "staging")
 	DEPLOY_TYPE=$DEPLOY_TYPE_BRANCH
@@ -92,6 +105,10 @@ tar czf - "$CIRCLE_PROJECT_REPONAME/" | eval $CMD_SSH_TAR
 DEPLOY_FILES_PATH="$CFG_FILES_PATH/$CIRCLE_PROJECT_REPONAME"
 CMD_SSH_FILES="cp -R $DEPLOY_FILES_PATH/* $TMPDIR/$CIRCLE_PROJECT_REPONAME"
 
+# Replace any lines from config over the new deployment.
+DEPLOY_CONFIG_PATH="$CFG_CONFIG_PATH/$CIRCLE_PROJECT_REPONAME"
+CMD_CONFIG_REPLACE="/usr/bin/env php $DEPLOY_CONFIG_PATH $TMPDIR/$CIRCLE_PROJECT_REPONAME"
+
 # In production, backup old directory is not used. Remove any old deployed files instead.
 CMD_BACKUP="rm -rf $DEPLOY_PATH/*"
 if [ "$1" != "production" ]; then
@@ -113,4 +130,4 @@ echo "Remotely executing: $CMD_MIGRATION"
 echo "Remotely executing: $CMD_SELF_DESTRUCT"
 
 # Perform all commands in one connection to minimise downtime.
-eval "ssh $SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT; $CMD_MIGRATION; $CMD_SELF_DESTRUCT'"
+eval "ssh $SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT; $CMD_MIGRATION; $CMD_SELF_DESTRUCT; $CMD_CONFIG_REPLACE' < replace-config.php"
