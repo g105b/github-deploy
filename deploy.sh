@@ -101,9 +101,16 @@ fi
 # Move the completed stream to the correct deploy path.
 CMD_MOVE_DEPLOYMENT="mkdir -p $DEPLOY_PATH; mv $TMPDIR/$CIRCLE_PROJECT_REPONAME/* $DEPLOY_PATH"
 
+MIGRATION_SCRIPT_PATH="$DEPLOY_PATH/migrate"
+CMD_MIGRATION="if [ -a $MIGRATION_SCRIPT_PATH ]; then $MIGRATION_SCRIPT_PATH; fi"
+SELF_PATH="$DEPLOY_PATH/deploy.sh"
+CMD_SELF_DESTRUCT="if [ -a $SELF_PATH ]; then rm $SELF_PATH; fi"
+
 echo "Remotely executing: $CMD_SSH_FILES"
 echo "Remotely executing: $CMD_BACKUP"
 echo "Remotely executing: $CMD_MOVE_DEPLOYMENT"
+echo "Remotely executing: $CMD_MIGRATION"
+echo "Remotely executing: $CMD_SELF_DESTRUCT"
 
 # Perform all commands in one connection to minimise downtime.
-eval "ssh $SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT'"
+eval "ssh $SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT; $CMD_MIGRATION; $CMD_SELF_DESTRUCT'"
