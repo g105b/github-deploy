@@ -19,26 +19,32 @@ Add each hostname that will be used in deployment individually to the SSH Permis
 
 ## X. Add `circle.yml` configuration file to your repo.
 
+The `checkout` section downloads the deploy script into the project's directory, ready for the correct execution from the deployment path.
+
 After any `machine`, `checkout`, `dependencies`, etc., add the `deployment` commands for matching branches/tags.
 
 The `issue`, `staging` and `production` sub-keys must match the deploy script to differentiate types of deployment.
 
 ```yml
+checkout:
+  post:
+    - wget https://raw.githubusercontent.com/g105b/circleci-github-deploy/master/deploy.sh
+
 deployment:
   issue:
     branch: /([0-9]+-.*)/
     commands:
-      - ./deploy issue
+      - ./deploy.sh issue
 
   staging:
     branch: master
     commands:
-      - ./deploy staging
+      - ./deploy.sh staging
 
   production:
     tag: /(v[0-9]\.[0-9]\.[0-9])/
     commands:
-      - ./deploy production
+      - ./deploy.sh production
 ```
 
 Each command executes the `deploy` script with the argument `issue`, `staging` or `production`. Branch/tag/path information is provided by CircleCI via environment variables.
@@ -51,7 +57,21 @@ For example on a production server, when a tag's distribution files are sent to 
 
 On staging servers (initiated from matching branches or the master branch), the same is true except the branch name will be appended to the path.
 
-For example on a staging server, when the master branch's distribution files are sent to the server, they will be placed into `/var/deploy/REPO_NAME/master`. The same goes for other branches. This allows a webserver to be set up to serve all branches using a subdomain convention such as master.staging.example.com .
+For example on a staging server, when the master branch's distribution files are sent to the server, they will be placed into `/var/deploy/REPO_NAME/master`. The same goes for other branches. This allows a webserver to be set up to serve all branches using a subdomain convention such as `master.staging.example.com`.
+
+# X. Configuring deployment paths and connections.
+
+The SSH connections and location of the deploy folders can be configured in the project's `config.ini`, within the `[deployment]` section:
+
+```ini
+[deployment]
+ssh_production=username@project-name.srv.organisation.com
+ssh_staging=username@test.project-name.srv.organisation.com
+deploy_base_path=/var/www/vhosts/repo-directory/deploy
+deploy_base_path_prod=/var/www/vhosts/repo-directory/deploy
+deploy_files_path=/var/www/vhosts/repo-directory/deploy/files
+deploy_files_path_prod=/var/www/vhosts/repo-directory/deploy/files
+```
 
 ## X. Configure non-tracked files.
 
@@ -59,7 +79,7 @@ There are two supported methods for handling non-tracked files, such as configur
 
 ### X.1. Full file overwrites.
 
-Certain files that need to exist on particular servers can be placed in `/var/deploy/files/REPO_NAME`. The files will be coppied over the repository after deployment, overwriting whatever is in its place. For example, when deploying the master branch to `/var/www/REPO_NAME/master`, placing a file at `/var/deploy/files/REPO_NAME/config/database.ini` will copy the file to `/var/www/REPO_NAME/master/config/database.ini`, and any file in its place will be overwritten.
+Certain files that need to exist on particular servers can be placed in `/var/deploy/files/REPO_NAME` (or the `deploy_files_path` setting). The files will be coppied over the repository after deployment, overwriting whatever is in its place. For example, when deploying the master branch to `/var/www/REPO_NAME/master`, placing a file at `/var/deploy/files/REPO_NAME/config/database.ini` will copy the file to `/var/www/REPO_NAME/master/config/database.ini`, and any file in its place will be overwritten.
 
 ### X.2. Configuration file placeholders.
 
