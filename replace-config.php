@@ -15,6 +15,9 @@ foreach(new RecursiveIteratorIterator($directoryIteratorFrom) as $fromFile) {
 
 	$relativePath = substr($fromFile->getPathName(), strlen($mergeFromPath));
 	$relativePath = ltrim($relativePath, "/");
+	if(!is_file("$mergeToPath/$relativePath")) {
+		touch("$mergeToPath/$relativePath");
+	}
 	$toFile = new SplFileObject("$mergeToPath/$relativePath", "r+");
 
 	$toData = parseFile($toFile);
