@@ -68,7 +68,6 @@ function serialiseToFile(SplFileInfo $file, array $data) {
 			$file->fwrite("[$category]" . PHP_EOL);
 
 			foreach($kvpList as $key => $value) {
-				$file->fwrite("$key=");
 				$file->fwrite("$key=\"$value\"" . PHP_EOL);
 			}
 		}
