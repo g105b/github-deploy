@@ -1,27 +1,30 @@
 #!/usr/bin/env php
 <?php
+/**
+ * Usage: replace-config.php /path/to/config/directory /path/to/deploy/directory
+ */
 $mergeFromPath = $argv[1];
 $mergeToPath = $argv[2] ?? "/dev/null";
 $mergeToPath = realpath($mergeToPath);
 $directoryIteratorFrom = new RecursiveDirectoryIterator($mergeFromPath);
 
-foreach (new RecursiveIteratorIterator($directoryIteratorFrom) as $fromFile) {
+foreach(new RecursiveIteratorIterator($directoryIteratorFrom) as $fromFile) {
 	if($fromFile->isDir()) {
 		continue;
 	}
+
 	$relativePath = substr($fromFile->getPathName(), strlen($mergeFromPath));
 	$relativePath = ltrim($relativePath, "/");
-	$toFile = new SplFileInfo("$mergeToPath/$relativePath");
+	$toFile = new SplFileObject("$mergeToPath/$relativePath", "r+");
 
-	$toObject = parseFile($toFile);
-	$fromObject = parseFile($fromFile);
-	if(empty($toObject) || empty($fromObject)) {
+	$toData = parseFile($toFile);
+	$fromData = parseFile($fromFile);
+	if(empty($toData) || empty($fromData)) {
 		continue;
 	}
 
-	$toObject = array_replace_recursive($toObject, $fromObject);
-
-	serialiseToFile($toFile, $toObject);
+	$toData = array_replace_recursive($toData, $fromData);
+	serialiseToFile($toFile, $toData);
 }
 
 function parseFile(SplFileInfo $file):array {
@@ -54,8 +57,18 @@ function serialiseToFile(SplFileInfo $file, array $data) {
 	$ext = $file->getExtension();
 	$filePath = $file->getPathname();
 
+	$file->ftruncate(0);
+
 	switch($ext) {
 	case "ini":
+		foreach($data as $category => $kvpList) {
+			$file->fwrite("[$category]" . PHP_EOL);
+
+			foreach($kvpList as $key => $value) {
+				$file->fwrite("$key=");
+				$file->fwrite("$key=\"$value\"" . PHP_EOL);
+			}
+		}
 		break;
 
 	case "json":

@@ -107,7 +107,7 @@ CMD_SSH_FILES="cp -R $DEPLOY_FILES_PATH/* $TMPDIR/$CIRCLE_PROJECT_REPONAME"
 
 # Replace any lines from config over the new deployment.
 DEPLOY_CONFIG_PATH="$CFG_CONFIG_PATH/$CIRCLE_PROJECT_REPONAME"
-CMD_CONFIG_REPLACE="/usr/bin/env php $DEPLOY_CONFIG_PATH $TMPDIR/$CIRCLE_PROJECT_REPONAME"
+CMD_CONFIG_REPLACE="wget https://raw.githubusercontent.com/g105b/github-deploy/file-parsing/replace-config.php && php replace-config.php $DEPLOY_CONFIG_PATH $TMPDIR/$CIRCLE_PROJECT_REPONAME"
 
 # In production, backup old directory is not used. Remove any old deployed files instead.
 CMD_BACKUP="rm -rf $DEPLOY_PATH/*"
@@ -123,11 +123,13 @@ CMD_MIGRATION="if [ -a $MIGRATION_SCRIPT_PATH ]; then $MIGRATION_SCRIPT_PATH; fi
 SELF_PATH="$DEPLOY_PATH/deploy.sh"
 CMD_SELF_DESTRUCT="if [ -a $SELF_PATH ]; then rm $SELF_PATH; fi"
 
-echo "Remotely executing: $CMD_SSH_FILES"
-echo "Remotely executing: $CMD_BACKUP"
-echo "Remotely executing: $CMD_MOVE_DEPLOYMENT"
-echo "Remotely executing: $CMD_MIGRATION"
-echo "Remotely executing: $CMD_SELF_DESTRUCT"
+echo "$CMD_SSH_FILES"
+echo "$CMD_BACKUP"
+echo "$CMD_MOVE_DEPLOYMENT"
+echo "$CMD_MIGRATION"
+echo "$CMD_SELF_DESTRUCT"
+
+CMD_FINAL="ssh $SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT; $CMD_MIGRATION; $CMD_SELF_DESTRUCT; $CMD_CONFIG_REPLACE'"
 
 # Perform all commands in one connection to minimise downtime.
-eval "ssh $SSH_CONNECTION '$CMD_SSH_FILES; $CMD_BACKUP; $CMD_MOVE_DEPLOYMENT; $CMD_MIGRATION; $CMD_SELF_DESTRUCT; $CMD_CONFIG_REPLACE' < replace-config.php"
+eval "$CMD_FINAL"
