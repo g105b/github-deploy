@@ -71,15 +71,15 @@ function serialiseToFile(SplFileInfo $file, array $data) {
 		foreach($data as $category => $kvpList) {
 			$file->fwrite("[$category]" . PHP_EOL);
 
-			foreach(REPLACEMENT_LIST as $replacement) {
-				$value = str_replace(
-					"\{$replacement\}",
-					getenv($replacement),
-					$value
-				);
-			}
-
 			foreach($kvpList as $key => $value) {
+				foreach(REPLACEMENT_LIST as $replacement) {
+					$value = str_replace(
+						"\{$replacement\}",
+						getenv($replacement),
+						$value
+					);
+				}
+
 				$file->fwrite("$key=\"$value\"" . PHP_EOL);
 			}
 		}
