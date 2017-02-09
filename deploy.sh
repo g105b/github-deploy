@@ -107,7 +107,7 @@ CMD_SSH_FILES="cp -R $DEPLOY_FILES_PATH/* $TMPDIR/$CIRCLE_PROJECT_REPONAME"
 
 # Replace any lines from config over the new deployment.
 DEPLOY_CONFIG_PATH="$CFG_CONFIG_PATH/$CIRCLE_PROJECT_REPONAME"
-CMD_CONFIG_REPLACE="wget -O $TMPDIR/replace-config.php https://raw.githubusercontent.com/g105b/github-deploy/master/replace-config.php && DEPLOY_REF=$DEPLOY_REF php $TMPDIR/replace-config.php $DEPLOY_CONFIG_PATH $TMPDIR/$CIRCLE_PROJECT_REPONAME && mv $TMPDIR/replace-config.php.old"
+CMD_CONFIG_REPLACE="wget -O $TMPDIR/replace-config.php https://raw.githubusercontent.com/g105b/github-deploy/master/replace-config.php && DEPLOY_REF=$DEPLOY_REF php $TMPDIR/replace-config.php $DEPLOY_CONFIG_PATH $TMPDIR/$CIRCLE_PROJECT_REPONAME && mv $TMPDIR/replace-config.php $TMPDIR/replace-config.php.old"
 
 # In production, backup old directory is not used. Remove any old deployed files instead.
 CMD_BACKUP="rm -rf $DEPLOY_PATH/*"
@@ -118,7 +118,7 @@ fi
 # Move the completed stream to the correct deploy path.
 CMD_MOVE_DEPLOYMENT="mkdir -p $DEPLOY_PATH; mv $TMPDIR/$CIRCLE_PROJECT_REPONAME/* $DEPLOY_PATH"
 
-MIGRATION_SCRIPT_PATH="$DEPLOY_PATH/migrate $CIRCLE_PROJECT_USERNAME $CIRCLE_PROJECT_REPONAME $DEPLOY_REF"
+MIGRATION_SCRIPT_PATH="$DEPLOY_PATH/vendor/bin/db-migrate -f"
 CMD_MIGRATION="if [ -a $MIGRATION_SCRIPT_PATH ]; then $MIGRATION_SCRIPT_PATH; fi"
 SELF_PATH="$DEPLOY_PATH/deploy.sh"
 CMD_SELF_DESTRUCT="if [ -a $SELF_PATH ]; then rm $SELF_PATH; fi"
