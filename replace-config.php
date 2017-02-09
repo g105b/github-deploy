@@ -3,7 +3,7 @@
 /**
  * Usage: replace-config.php /path/to/config/directory /path/to/deploy/directory
  */
-$replacementList = [
+const REPLACEMENT_LIST = [
 	"DEPLOY_REF",
 ];
 
@@ -71,7 +71,7 @@ function serialiseToFile(SplFileInfo $file, array $data) {
 		foreach($data as $category => $kvpList) {
 			$file->fwrite("[$category]" . PHP_EOL);
 
-			foreach($replacementList as $replacement) {
+			foreach(REPLACEMENT_LIST as $replacement) {
 				$value = str_replace(
 					"\{$replacement\}",
 					getenv($replacement),
