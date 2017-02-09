@@ -74,7 +74,7 @@ function serialiseToFile(SplFileInfo $file, array $data) {
 			foreach($kvpList as $key => $value) {
 				foreach(REPLACEMENT_LIST as $replacement) {
 					$value = str_replace(
-						"\{$replacement\}",
+						"{" . $replacement . "}",
 						getenv($replacement),
 						$value
 					);
