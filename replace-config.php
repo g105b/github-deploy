@@ -3,6 +3,10 @@
 /**
  * Usage: replace-config.php /path/to/config/directory /path/to/deploy/directory
  */
+$replacementList = [
+	"DEPLOY_REF",
+];
+
 $mergeFromPath = $argv[1];
 $mergeToPath = $argv[2] ?? "/dev/null";
 $mergeToPath = realpath($mergeToPath);
@@ -66,6 +70,14 @@ function serialiseToFile(SplFileInfo $file, array $data) {
 	case "ini":
 		foreach($data as $category => $kvpList) {
 			$file->fwrite("[$category]" . PHP_EOL);
+
+			foreach($replacementList as $replacement) {
+				$value = str_replace(
+					"\{$replacement\}",
+					getenv($replacement),
+					$value
+				);
+			}
 
 			foreach($kvpList as $key => $value) {
 				$file->fwrite("$key=\"$value\"" . PHP_EOL);

@@ -107,7 +107,7 @@ CMD_SSH_FILES="cp -R $DEPLOY_FILES_PATH/* $TMPDIR/$CIRCLE_PROJECT_REPONAME"
 
 # Replace any lines from config over the new deployment.
 DEPLOY_CONFIG_PATH="$CFG_CONFIG_PATH/$CIRCLE_PROJECT_REPONAME"
-CMD_CONFIG_REPLACE="wget -O $TMPDIR/replace-config.php https://raw.githubusercontent.com/g105b/github-deploy/master/replace-config.php && php $TMPDIR/replace-config.php $DEPLOY_CONFIG_PATH $TMPDIR/$CIRCLE_PROJECT_REPONAME && rm $TMPDIR/replace-config.php"
+CMD_CONFIG_REPLACE="DEPLOY_REF=$DEPLOY_REF && wget -O $TMPDIR/replace-config.php https://raw.githubusercontent.com/g105b/github-deploy/master/replace-config.php && php $TMPDIR/replace-config.php $DEPLOY_CONFIG_PATH $TMPDIR/$CIRCLE_PROJECT_REPONAME && rm $TMPDIR/replace-config.php"
 
 # In production, backup old directory is not used. Remove any old deployed files instead.
 CMD_BACKUP="rm -rf $DEPLOY_PATH/*"
