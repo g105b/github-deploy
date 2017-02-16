@@ -14,40 +14,41 @@ CFG_FILES_PATH_PROD="$CFG_FILES_PATH"
 CFG_CONFIG_PATH="/var/deploy/config"
 CFG_CONFIG_PATH_PROD="$CFG_CONFIG_PATH"
 : ${DISTRIBUTION_DIRECTORY:=$CIRCLE_PROJECT_REPONAME}
+CFG_LOCAL_PATH="config.ini"
 
 # Overwrite the configurable variables with any set in config.ini .
-if [ -a config.ini ]; then
-	VALUE=$(awk -F "=" '/deploy_tmp_path=/ {print $2}' config.ini)
+if [ -a $CFG_LOCAL_PATH ]; then
+	VALUE=$(awk -F "=" '/deploy_tmp_path=/ {print $2}' $CFG_LOCAL_PATH)
 	if [ ! -z $VALUE ]; then
 		CFG_TMP_PATH=$VALUE
 	fi
 
-	VALUE=$(awk -F "=" '/deploy_base_path=/ {print $2}' config.ini)
+	VALUE=$(awk -F "=" '/deploy_base_path=/ {print $2}' $CFG_LOCAL_PATH)
 	if [ ! -z $VALUE ]; then
 		CFG_DEPLOY_BASE_PATH=$VALUE
 	fi
 
-	VALUE=$(awk -F "=" '/deploy_base_path_prod=/ {print $2}' config.ini)
+	VALUE=$(awk -F "=" '/deploy_base_path_prod=/ {print $2}' $CFG_LOCAL_PATH)
 	if [ ! -z $VALUE ]; then
 		CFG_DEPLOY_BASE_PATH_PROD=$VALUE
 	fi
 
-	VALUE=$(awk -F "=" '/deploy_files_path=/ {print $2}' config.ini)
+	VALUE=$(awk -F "=" '/deploy_files_path=/ {print $2}' $CFG_LOCAL_PATH)
 	if [ ! -z $VALUE ]; then
 		CFG_FILES_PATH=$VALUE
 	fi
 
-	VALUE=$(awk -F "=" '/deploy_files_path_prod=/ {print $2}' config.ini)
+	VALUE=$(awk -F "=" '/deploy_files_path_prod=/ {print $2}' $CFG_LOCAL_PATH)
 	if [ ! -z $VALUE ]; then
 		CFG_FILES_PATH_PROD=$VALUE
 	fi
 
-	VALUE=$(awk -F "=" '/deploy_config_path=/ {print $2}' config.ini)
+	VALUE=$(awk -F "=" '/deploy_config_path=/ {print $2}' $CFG_LOCAL_PATH)
 	if [ ! -z $VALUE ]; then
 		CFG_CONFIG_PATH=$VALUE
 	fi
 
-	VALUE=$(awk -F "=" '/deploy_config_path_prod=/ {print $2}' config.ini)
+	VALUE=$(awk -F "=" '/deploy_config_path_prod=/ {print $2}' $CFG_LOCAL_PATH)
 	if [ ! -z $VALUE ]; then
 		CFG_CONFIG_PATH_PROD=$VALUE
 	fi
@@ -85,10 +86,10 @@ esac
 
 case $DEPLOY_TYPE in
 $DEPLOY_TYPE_TAG)
-	SSH_CONNECTION=$(awk -F "=" '/ssh_production/ {print $2}' config.ini)
+	SSH_CONNECTION=$(awk -F "=" '/ssh_production/ {print $2}' $CFG_LOCAL_PATH)
 	;;
 $DEPLOY_TYPE_BRANCH)
-	SSH_CONNECTION=$(awk -F "=" '/ssh_staging/ {print $2}' config.ini)
+	SSH_CONNECTION=$(awk -F "=" '/ssh_staging/ {print $2}' $CFG_LOCAL_PATH)
 	;;
 esac
 
