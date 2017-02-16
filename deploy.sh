@@ -13,6 +13,7 @@ CFG_FILES_PATH="/var/deploy/files"
 CFG_FILES_PATH_PROD="$CFG_FILES_PATH"
 CFG_CONFIG_PATH="/var/deploy/config"
 CFG_CONFIG_PATH_PROD="$CFG_CONFIG_PATH"
+: ${DISTRIBUTION_DIRECTORY:=$CIRCLE_PROJECT_REPONAME}
 
 # Overwrite the configurable variables with any set in config.ini .
 if [ -a config.ini ]; then
@@ -98,8 +99,8 @@ CMD_SSH_TAR="ssh $SSH_CONNECTION '$REMOTE_SSH_TAR_COMMAND'"
 # Circle will execute this script within the repo directory.
 cd ..
 # Perform tar stream. "-" file indicates a redirect via pipe.
-echo "Executing: tar czf - '$CIRCLE_PROJECT_REPONAME/' | eval $CMD_SSH_TAR"
-tar czf - "$CIRCLE_PROJECT_REPONAME/" | eval $CMD_SSH_TAR
+echo "Executing: tar czf - '$DISTRIBUTION_DIRECTORY/' | eval $CMD_SSH_TAR"
+tar czf - "$DISTRIBUTION_DIRECTORY/" | eval $CMD_SSH_TAR
 
 # Copy any deployment files over the new deployment.
 DEPLOY_FILES_PATH="$CFG_FILES_PATH/$CIRCLE_PROJECT_REPONAME"
