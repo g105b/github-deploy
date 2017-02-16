@@ -14,7 +14,7 @@ CFG_FILES_PATH_PROD="$CFG_FILES_PATH"
 CFG_CONFIG_PATH="/var/deploy/config"
 CFG_CONFIG_PATH_PROD="$CFG_CONFIG_PATH"
 : ${DISTRIBUTION_DIRECTORY:=$CIRCLE_PROJECT_REPONAME}
-CFG_LOCAL_PATH="config.ini"
+: ${CFG_LOCAL_PATH:="config.ini"}
 
 # Overwrite the configurable variables with any set in config.ini .
 if [ -a $CFG_LOCAL_PATH ]; then
