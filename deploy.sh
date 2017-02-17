@@ -15,6 +15,7 @@ CFG_CONFIG_PATH="/var/deploy/config"
 CFG_CONFIG_PATH_PROD="$CFG_CONFIG_PATH"
 : ${DISTRIBUTION_DIRECTORY:=$CIRCLE_PROJECT_REPONAME}
 : ${CFG_LOCAL_PATH:="config.ini"}
+: ${POST_COPY_COMMAND:=""}
 
 # Overwrite the configurable variables with any set in config.ini .
 if [ -a $CFG_LOCAL_PATH ]; then
@@ -102,6 +103,11 @@ cd ..
 # Perform tar stream. "-" file indicates a redirect via pipe.
 echo "Executing: tar czf - '$DISTRIBUTION_DIRECTORY/' | eval $CMD_SSH_TAR"
 tar czf - "$DISTRIBUTION_DIRECTORY/" | eval $CMD_SSH_TAR
+
+# Perform post-copy command, if supplied.
+if [ -z "$POST_COPY_COMMAND" ]; then
+	eval "ssh $SSH_CONNECTION '$POST_COPY_COMMAND'"
+fi
 
 # Copy any deployment files over the new deployment.
 DEPLOY_FILES_PATH="$CFG_FILES_PATH/$CIRCLE_PROJECT_REPONAME"
