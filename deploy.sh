@@ -104,11 +104,6 @@ cd ..
 echo "Executing: tar czf - '$DISTRIBUTION_DIRECTORY/' | eval $CMD_SSH_TAR"
 tar czf - "$DISTRIBUTION_DIRECTORY/" | eval $CMD_SSH_TAR
 
-# Perform post-copy command, if supplied.
-if [ -z "$POST_COPY_COMMAND" ]; then
-	eval "ssh $SSH_CONNECTION '$POST_COPY_COMMAND'"
-fi
-
 # Copy any deployment files over the new deployment.
 DEPLOY_FILES_PATH="$CFG_FILES_PATH/$CIRCLE_PROJECT_REPONAME"
 CMD_SSH_FILES="cp -R $DEPLOY_FILES_PATH/* $TMPDIR/$CIRCLE_PROJECT_REPONAME"
@@ -137,8 +132,9 @@ echo "3: $CMD_CONFIG_REPLACE"
 echo "4: $CMD_MOVE_DEPLOYMENT"
 echo "5: $CMD_MIGRATION"
 echo "6: $CMD_SELF_DESTRUCT"
+echo "7: $POST_COPY_COMMAND"
 
-CMD_FINAL="ssh $SSH_CONNECTION 'set -e; echo 1; $CMD_SSH_FILES; echo 2; $CMD_BACKUP; echo 3; $CMD_CONFIG_REPLACE; echo 4; $CMD_MOVE_DEPLOYMENT; echo 5; $CMD_MIGRATION; echo 6; $CMD_SELF_DESTRUCT'"
+CMD_FINAL="ssh $SSH_CONNECTION 'set -e; echo 1; $CMD_SSH_FILES; echo 2; $CMD_BACKUP; echo 3; $CMD_CONFIG_REPLACE; echo 4; $CMD_MOVE_DEPLOYMENT; echo 5; $CMD_MIGRATION; echo 6; $CMD_SELF_DESTRUCT; echo 7; $POST_COPY_COMMAND'"
 
 # Perform all commands in one connection to minimise downtime.
 eval "$CMD_FINAL"
