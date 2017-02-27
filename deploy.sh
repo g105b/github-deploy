@@ -127,14 +127,14 @@ SELF_PATH="$DEPLOY_PATH/deploy.sh"
 CMD_SELF_DESTRUCT="if [ -a $SELF_PATH ]; then rm $SELF_PATH; fi"
 
 echo "1: $CMD_SSH_FILES"
+echo "1a: $POST_COPY_COMMAND"
 echo "2: $CMD_BACKUP"
 echo "3: $CMD_CONFIG_REPLACE"
 echo "4: $CMD_MOVE_DEPLOYMENT"
 echo "5: $CMD_MIGRATION"
 echo "6: $CMD_SELF_DESTRUCT"
-echo "7: $POST_COPY_COMMAND"
 
-CMD_FINAL="ssh $SSH_CONNECTION 'set -e; echo 1; $CMD_SSH_FILES; echo 2; $CMD_BACKUP; echo 3; $CMD_CONFIG_REPLACE; echo 4; $CMD_MOVE_DEPLOYMENT; echo 5; $CMD_MIGRATION; echo 6; $CMD_SELF_DESTRUCT; echo 7; $POST_COPY_COMMAND'"
+CMD_FINAL="ssh $SSH_CONNECTION 'set -e; echo 1; $CMD_SSH_FILES; echo 1a; $POST_COPY_COMMAND; echo 2; $CMD_BACKUP; echo 3; $CMD_CONFIG_REPLACE; echo 4; $CMD_MOVE_DEPLOYMENT; echo 5; $CMD_MIGRATION; echo 6; $CMD_SELF_DESTRUCT'"
 
 # Perform all commands in one connection to minimise downtime.
 eval "$CMD_FINAL"
