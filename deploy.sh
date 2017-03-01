@@ -15,7 +15,7 @@ CFG_CONFIG_PATH="/var/deploy/config"
 CFG_CONFIG_PATH_PROD="$CFG_CONFIG_PATH"
 : ${DISTRIBUTION_DIRECTORY:=$CIRCLE_PROJECT_REPONAME}
 : ${CFG_LOCAL_PATH:="config.ini"}
-: ${POST_COPY_COMMAND:=""}
+: ${POST_COPY_COMMAND:="echo 'no post-copy command'"}
 
 # Overwrite the configurable variables with any set in config.ini .
 if [ -a $CFG_LOCAL_PATH ]; then
