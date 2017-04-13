@@ -119,7 +119,7 @@ if [ "$1" != "production" ]; then
 fi
 
 # Move the completed stream to the correct deploy path.
-CMD_MOVE_DEPLOYMENT="mkdir -p $DEPLOY_PATH; cp $TMPDIR/$CIRCLE_PROJECT_REPONAME/* $DEPLOY_PATH"
+CMD_MOVE_DEPLOYMENT="mkdir -p $DEPLOY_PATH; cp -R $TMPDIR/$CIRCLE_PROJECT_REPONAME/* $DEPLOY_PATH"
 
 MIGRATION_SCRIPT_PATH="$DEPLOY_PATH/vendor/bin/db-migrate"
 CMD_MIGRATION="if [ -a $MIGRATION_SCRIPT_PATH ]; then $MIGRATION_SCRIPT_PATH; fi"
